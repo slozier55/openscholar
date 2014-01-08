@@ -129,22 +129,55 @@ function os_publications_settings() {
     $name = str_replace('.csl' , '', $file->getFilename());
     $styles[$name] = $xml->info->title;
   }
+  ksort($styles);
+
+  $form['right']['biblio_export_links'] = array(
+    '#type' => 'checkboxes',
+    '#title' => t('Select which export formats should accompany each bibliographic record'),
+    '#default_value' => variable_get('biblio_export_links', array('tagged', 'xml', 'bibtex')),
+    '#options' => array(
+      'tagged' => t('EndNote Tagged'),
+      'xml' => t('EndNote XML'),
+      'bibtex' => t('BibTex'),
+    ),
+    '#description' => t('Each selected format will appear in its own export link.'),
+  );
+
+  $form['right']['os_publications_note_in_teaser'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Show the "note" content in teaser?'),
+    //'#description' => t('This alters the bibliographic format of your publications.'),
+    '#default_value' => variable_get('os_publications_note_in_teaser', FALSE),
+    '#description' => t('If this is checked and you add a note to a publication then it will show as part of a publications teaser.'),
+  );
+
+  $types = biblio_types();
+  foreach ($types as $type => $info) {
+    $results[$type] = $info->name;
+  }
+  asort($results);
+
+  $form['right']['os_publications_filter_publication_types'] = array(
+    '#type' => 'checkboxes',
+    '#title' => t('Show only publications of type'),
+    '#default_value' => variable_get('os_publications_filter_publication_types', array_keys($results)),
+    '#options' => $results,
+    '#description' => t('The main list of publications on your publications page will list the types selected here.'),
+    '#attributes' => array('class' => array('form-checkboxes-scrolling')),
+  );
+
+  $form['right']['os_publications_shorten_citations'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Short URLs in citations'),
+    '#description' => t('When this is checked, a shortened URL will be included in the citation.'),
+    '#default_value' => variable_get('os_publications_shorten_citations'),
+  );
 
   $form['left']['os_publications_style_type'] = array(
     '#type' => 'radios',
-    '#title' => t('Select the style type'),
+    '#title' => t('Select your preferred bibliographic format'),
     '#default_value' => empty($biblio_views_settings['style_name']) ? 'chicago-author-date' : $biblio_views_settings['style_name'],
     '#options' => $styles,
-  );
-
-  $form['left']['biblio_order'] = array(
-    '#type' => 'radios',
-    '#title' => t('Select default order of the sort category'),
-    '#default_value' => variable_get('biblio_order', 'DESC'),
-    '#options' => array(
-      'DESC' => t('Descending'),
-      'ASC' => t('Ascending')
-    ),
   );
 
   // Backward compatibility with the old OS publication field order settings.
@@ -162,19 +195,14 @@ function os_publications_settings() {
     ),
   );
 
-  $types = biblio_types();
-  foreach ($types as $type => $info) {
-    $results[$type] = $info->name;
-  }
-  asort($results);
-
-  $form['right']['os_publications_filter_publication_types'] = array(
-    '#type' => 'checkboxes',
-    '#title' => t('Show only publications of type'),
-    '#default_value' => variable_get('os_publications_filter_publication_types', array_keys($results)),
-    '#options' => $results,
-    '#description' => t('The main list of publications on your publications page will list the types selected here.'),
-    '#attributes' => array('class' => array('form-checkboxes-scrolling')),
+  $form['left']['biblio_order'] = array(
+    '#type' => 'radios',
+    '#title' => t('Select default order of the sort category'),
+    '#default_value' => variable_get('biblio_order', 'DESC'),
+    '#options' => array(
+      'DESC' => t('Descending'),
+      'ASC' => t('Ascending')
+    ),
   );
 
   $form['#submit'][] = 'os_publications_set_style_name';
