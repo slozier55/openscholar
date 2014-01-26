@@ -258,8 +258,11 @@ projects[oembed][patch][] = "http://drupalcode.org/project/oembed.git/patch/a27a
 projects[oembed][patch][] = "http://drupal.org/files/issues/oembed.2134415.wysiwyg_dimensions.patch"
 
 projects[og][subdir] = "contrib"
-projects[og][version] = 2.4
-projects[og][patch][] = "https://drupal.org/files/issues/2153555-og-role-maintain-on-revert-6.patch"
+; @todo: Change to 2.5 when https://drupal.org/node/2162861 is fixed.
+; projects[og][version] = 2.5
+projects[og][download][type] = git
+projects[og][download][branch] = 7.x-2.x
+projects[og][download][revision] = 79de313
 
 projects[og_moderation][subdir] = "contrib"
 projects[og_moderation][version] = 2.0
