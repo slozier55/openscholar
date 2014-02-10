@@ -1,30 +1,42 @@
 Feature:
   Testing the event registration module.
 
-  @api @wip
-  Scenario: Limit the registration capacity to 1 and verify it for a normal user.
+  @api
+  Scenario: Verify that the event capacity is 1, no registration is possible
+            after one registration for a vsite user.
     Given I am logging in as "john"
       And I turn on event registration on "Halley's Comet"
      When I visit "john/event/halleys-comet"
       And I set the event capacity to "1"
-      And I fill in "Email" with "g@gmail.com"
+      And I visit "john/os_events/nojs/registration/35"
+      And I fill in "Email" with "a@gmail.com"
       And I press "Signup"
      When I am logging in as "michelle"
       And I visit "john/event/halleys-comet"
-      And I should not see "Sign up for Halley's Comet"
-     Then I delete "john" registration
+     Then I should not see "Sign up for this event"
 
-  @api @wip
-  Scenario: Limit the registration capacity to 2 and verify it for a normal user.
+  @api
+  Scenario: Verify that the event capacity is 1, no registration is possible
+            after one registration for an anonymous user.
+    Given I visit "john/event/halleys-comet"
+     Then I should not see "Sign up for this event"
+
+  @api
+  Scenario: Verify that the event capacity is 2, registration is possible
+            for a vsite user.
     Given I am logging in as "john"
      When I visit "john/event/halleys-comet"
       And I set the event capacity to "2"
-      And I fill in "Email" with "g@gmail.com"
-      And I press "Signup"
-     When I am logging in as "michelle"
+     When I am logging in as "bruce"
       And I visit "john/event/halleys-comet"
-      And I should see "Sign up for Halley's Comet"
+      And I should see "Sign up for this event"
      Then I delete "john" registration
+
+  @api
+  Scenario: Verify that the event capacity is 2, registration is possible
+            for an anonymous user.
+   Given I visit "john/event/halleys-comet"
+    Then I should see "Sign up for this event"
 
   @api
   Scenario: Test adding event.
@@ -43,7 +55,7 @@ Feature:
       And I am logging in as "admin"
       And I make registration to event without javascript available
      When I am logging in as "bill"
-      And I visit "john/event/my-new-event"
+      And I visit "john/os_events/nojs/registration/73"
       And I fill in "Email" with "bill@example.com"
       And I fill in "Full name" with "Bill Clinton"
       And I fill in "Department" with "Astronomy"

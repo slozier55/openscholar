@@ -81,6 +81,7 @@ function os_events_user_default_permissions() {
     'name' => 'create event_signup_simple registration',
     'roles' => array(
       'anonymous user' => 'anonymous user',
+      'authenticated user' => 'authenticated user',
       'content editor' => 'content editor',
       'manager' => 'manager',
       'vsite admin' => 'vsite admin',
@@ -94,6 +95,7 @@ function os_events_user_default_permissions() {
     'name' => 'create event_signup_simple registration other anonymous',
     'roles' => array(
       'anonymous user' => 'anonymous user',
+      'authenticated user' => 'authenticated user',
       'content editor' => 'content editor',
       'manager' => 'manager',
       'vsite admin' => 'vsite admin',
@@ -148,6 +150,7 @@ function os_events_user_default_permissions() {
     'name' => 'delete own event_signup_simple registration',
     'roles' => array(
       'anonymous user' => 'anonymous user',
+      'authenticated user' => 'authenticated user',
       'content editor' => 'content editor',
       'manager' => 'manager',
       'vsite admin' => 'vsite admin',
@@ -227,6 +230,7 @@ function os_events_user_default_permissions() {
     'name' => 'view own event_signup_simple registration',
     'roles' => array(
       'anonymous user' => 'anonymous user',
+      'authenticated user' => 'authenticated user',
       'content editor' => 'content editor',
       'manager' => 'manager',
       'vsite admin' => 'vsite admin',
