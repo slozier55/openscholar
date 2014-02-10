@@ -8,8 +8,10 @@ Feature:
       And I turn on event registration on "Halley's Comet"
      When I visit "john/event/halleys-comet"
       And I set the event capacity to "1"
+          # As Javascript is disabled we use a special URL to display the
+          # registration form (with JS a modal would open).
       And I visit "john/os_events/nojs/registration/35"
-      And I fill in "Email" with "a@gmail.com"
+      And I fill in "Email" with "bob@example.com"
       And I press "Signup"
      When I am logging in as "michelle"
       And I visit "john/event/halleys-comet"
@@ -55,6 +57,8 @@ Feature:
       And I am logging in as "admin"
       And I make registration to event without javascript available
      When I am logging in as "bill"
+          # As Javascript is disabled we use a special URL to display the
+          # registration form (with JS a modal would open).
       And I visit "john/os_events/nojs/registration/73"
       And I fill in "Email" with "bill@example.com"
       And I fill in "Full name" with "Bill Clinton"
