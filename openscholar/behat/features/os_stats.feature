@@ -6,7 +6,7 @@ Feature:
     Given I visit "stats"
       And I should get:
       """
-      {"success":true,"filesize":{"value":"{{*}}","text":"Total uploaded"},"filesize_bytes":{"value":"{{*}}","text":"Total uploaded bytes"},"users":{"value":"{{*}}","text":"Users"},"websites":{"value":"{{*}}","text":"Websites"},"posts":{"value":"{{*}}","text":"Posts"},"publications":{"value":"{{*}}","text":"Publications"},"files":{"value":"{{*}}","text":"Uploaded files"},"href":"{{*}}","os_version":"{{*}}"}
+      {"success":true,"filesize":{"value":"{{*}}","text":"Total uploaded"},"filesize_bytes":{"value":"{{*}}","text":"Total uploaded bytes"},"users":{"value":"{{*}}","text":"Users"},"new_users":{"value":"{{*}}","text":"New users"},"websites":{"value":"{{*}}","text":"Websites"},"new_websites":{"value":"{{*}}","text":"New websites"},"posts":{"value":"{{*}}","text":"Posts"},"new_posts":{"value":"{{*}}","text":"New posts"},"publications":{"value":"{{*}}","text":"Publications"},"new_publications":{"value":"{{*}}","text":"New publications"},"files":{"value":"{{*}}","text":"Uploaded files"},"href":"{{*}}","os_version":"{{*}}"}
       """
 
   @api
