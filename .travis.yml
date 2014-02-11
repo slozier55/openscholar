@@ -22,6 +22,9 @@ before_script:
   - sudo sh -c "cat openscholar/behat/lincoln-vhost.txt > /etc/apache2/sites-available/lincoln"
   - sudo a2ensite lincoln
   - sudo service apache2 reload
+  - sudo ls -al /etc/apache2/
+  - sudo cat /etc/apache2/apache2.conf
+  - sudo cat /etc/apache2/httpd.conf
   - "mysql -e 'create database drupal;'"
   - pear channel-discover pear.drush.org
   - pear install drush/drush
