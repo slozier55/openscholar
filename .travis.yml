@@ -9,67 +9,43 @@ mysql:
   encoding: utf8
 
 before_script:
-  # Install apache
-  - sudo apt-get update
-  - sudo apt-get install apache2
-  - sudo a2enmod actions
-  - sudo a2enmod rewrite
-  - echo "export PATH=/home/vagrant/.phpenv/bin:$PATH" | sudo tee -a /etc/apache2/envvars > /dev/null
-  - echo "$(curl -fsSL https://gist.github.com/roderik/16d751c979fdeb5a14e3/raw/74f4fec92c064c4f683fef28a6098caf0f038de7/gistfile1.txt)" | sudo tee /etc/apache2/conf.d/phpconfig > /dev/null
-  - echo "$(curl -fsSL https://gist.github.com/roderik/2eb301570ed4a1f4c33d/raw/8066fda124b6c86f69ad32a010b8c22bbaf868e8/gistfile1.txt)" | sed -e "s,PATH,`pwd`/www,g" | sudo tee /etc/apache2/sites-available/default > /dev/null
-  - sudo service apache2 restart
-  - sudo sh -c "echo 127.0.1.1	lincoln.local >> /etc/hosts"
-  - sudo sh -c "cat openscholar/behat/lincoln-vhost.txt > /etc/apache2/sites-available/lincoln"
-  - sudo a2ensite lincoln
-  - sudo cat /etc/apache2/apache2.conf | sed -e "s,Timeout 300,Timeout 900,g" | sudo tee /etc/apache2/apache2.conf > /dev/null
-  - sudo cat /etc/apache2/apache2.conf
-  - sudo service apache2 reload
-  - "mysql -e 'create database drupal;'"
+  # navigate out of module directory to prevent blown stack by recursive module lookup
+  - cd ../..
+
+  # install drush
   - pear channel-discover pear.drush.org
-  - pear install drush/drush
+  - pear install drush/drush-5.8.0
   - phpenv rehash
+
+  # install php packages required for running a web server from drush on php 5.3
+  - sudo apt-get update > /dev/null
+  - sudo apt-get install -y --force-yes php5-cgi php5-mysql
+
+  # create new site, stubbing sendmail path with true to prevent delivery errors and manually resolving drush path
+  - mysql -e 'create database drupal'
+  - php -d sendmail_path=`which true` `pear config-get php_dir`/drush/drush.php --yes core-quick-drupal --profile=testing --no-server --db-url=mysql://root:@127.0.0.1/openscholar
+
+  # reference and enable openscholar in build site
+  - ln -s $(readlink -e $(cd -)) openscholar/drupal/www/profiles/openscholar
+  - cd openscholar/drupal
   - bash scripts/setup
   - bash scripts/build
-
-  # Download and install Apache solr
-  - wget http://wiki.gizra-labs.com/images/e/ee/Apache-solr-3.6.2.zip
-  - unzip -o Apache-solr-3.6.2.zip
-  - cd apache-solr-3.6.2/example/solr/conf
-  # Copy the solr config files from the apache solr module
-  - yes | cp /home/travis/build/openscholar/openscholar/www/profiles/openscholar/modules/contrib/apachesolr/solr-conf/solr-3.x/* .
-  # Copy the modified solrconfig.xml file to commit records every 20 seconds so items will show up in search sooner
-  - yes | cp /home/travis/build/openscholar/openscholar/www/profiles/openscholar/behat/solr/solrconfig.xml .
-  - cd ../../
-  - java -jar start.jar &
-  - sleep 10
-  - cd /home/travis/build/openscholar/openscholar
-
-  # Install a multi-tanent, development site.
   - cd www
-  - mkdir -p /tmp
-  - mkdir -p /tmp/devel-mails
-  - mkdir -p sites/default/files
-  - sudo chmod 777 /tmp -R
-  - sudo chmod 777 sites/default -R
   - drush si openscholar --account-pass=admin --db-url=mysql://root:@127.0.0.1/drupal openscholar_flavor_form.os_profile_flavor=development openscholar_install_type.os_profile_type=vsite --yes
+
+  # start a web server on port 8080, run in the background; wait for initialization
+  - drush runserver 127.0.0.1:8080 &
+  - until netstat -an 2>/dev/null | grep '8080.*LISTEN'; do true; done
+
   - drush vset purl_base_domain http://127.0.0.1
   - drush en os_migrate_demo -y
   - drush mi --all --user=1
-
-  # Index site using Apache solr
-  - drush en os_search_solr -y
-  - drush solr-mark-all
-  - drush solr-index
 
   # Copy Behat configuration file.
   - cd profiles/openscholar/behat
   - cp behat.local.yml.travis behat.local.yml
   - curl -s https://getcomposer.org/installer | php
   - php composer.phar install --prefer-source
-  - sudo cat /var/log/apache2/error.log
 
 script:
   - ./bin/behat --tags=~wip
-
-after_script:
-    - sudo cat /var/log/apache2/error.log
