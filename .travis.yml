@@ -27,7 +27,7 @@ before_script:
 
   # reference and enable openscholar in build site
   - ls -al
-  - ln -s $(readlink -e $(cd -)) openscholar/drupal/www/profiles/openscholar
+  # - ln -s $(readlink -e $(cd -)) openscholar/drupal/www/profiles/openscholar
   - cd openscholar/drupal
   - bash scripts/setup
   - bash scripts/build
