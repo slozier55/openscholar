@@ -26,10 +26,9 @@ before_script:
   - php -d sendmail_path=`which true` `pear config-get php_dir`/drush/drush.php --yes core-quick-drupal --profile=testing --no-server --db-url=mysql://root:@127.0.0.1/openscholar
 
   # reference and enable openscholar in build site
-  - cd openscholar
+  - cd openscholar/openscholar
   - ls -al
-  # - ln -s $(readlink -e $(cd -)) openscholar/drupal/www/profiles/openscholar
-  - cd drupal
+  - ln -s $(readlink -e $(cd -)) openscholar/openscholar/www/profiles/openscholar
   - bash scripts/setup
   - bash scripts/build
   - cd www
