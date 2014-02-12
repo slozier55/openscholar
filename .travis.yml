@@ -28,7 +28,7 @@ before_script:
   # reference and enable openscholar in build site
   - cd openscholar/openscholar
   - ls -al
-  - ln -s $(readlink -e $(cd -)) openscholar/openscholar/www/profiles/openscholar
+  - ln -s $(readlink -e $(cd -)) openscholar/openscholar/openscholar/profiles/openscholar
   - bash scripts/setup
   - bash scripts/build
   - cd www
